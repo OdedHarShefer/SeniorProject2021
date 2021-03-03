@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.seniorproject2021">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".ActivityCustomer"></activity>
+        <activity android:name=".ActivityProvider" />
+        <activity android:name=".ActivitySchedule" />
+        <activity android:name=".ActivityAddCustomer" />
+        <activity android:name=".ActivityViewAppointmentsCust" />
+        <activity android:name=".ActivityViewAppointmentsProv" />
+        <activity android:name=".ActivityMakeSchedule" />
+        <activity android:name=".ActivityMakeAppointment" />
+        <activity android:name=".ActivityViewChatsProv" />
+        <activity android:name=".ActivityViewProviders" />
+        <activity android:name=".ActivityViewCustomers" />
+        <activity android:name=".ActivityAddProviders" />
+        <activity android:name=".ActivityNewChat" />
+        <activity android:name=".ActivityProfileCust" />
+        <activity android:name=".ActivityViewChatsCust" />
+        <activity
+            android:name=".DrawerActivity"
+            android:label="@string/title_activity_drawer"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ActivityProfileProv" />
+        <activity android:name=".ActivityProfileEditorCust" />
+        <activity android:name=".ActivityProfileEditorProv" />
+        <activity android:name=".ActivityProfilePick" />
+        <activity android:name=".ActivitySignIn" />
+        <activity android:name=".ActivityLogIn">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
