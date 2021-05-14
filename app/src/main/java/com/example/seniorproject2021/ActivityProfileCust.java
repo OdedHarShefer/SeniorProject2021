@@ -46,14 +46,14 @@ public class ActivityProfileCust extends AppCompatActivity {
                 Intent i = new Intent();
                 if (item.getItemId() == R.id.nav_profile_cust) {
                     i = new Intent(getApplicationContext(), ActivityProfileCust.class);
-                } else if (item.getItemId() == R.id.nav_make_appointment) {
-                    i = new Intent(getApplicationContext(), ActivityMakeAppointment.class);
                 } else if (item.getItemId() == R.id.nav_view_appointments) {
                     i = new Intent(getApplicationContext(), ActivityViewAppointmentsCust.class);
                 } else if (item.getItemId() == R.id.nav_view_providers) {
                     i = new Intent(getApplicationContext(), ActivityViewProviders.class);
                 } else if (item.getItemId() == R.id.nav_view_chats) {
                     i = new Intent(getApplicationContext(), ActivityViewChatsCust.class);
+                } else if (item.getItemId() == R.id.nav_switch_accounts) {
+                    i = new Intent(getApplicationContext(), ActivityProfilePick.class);
                 } else if (item.getItemId() == R.id.nav_logout) {
 
                 }

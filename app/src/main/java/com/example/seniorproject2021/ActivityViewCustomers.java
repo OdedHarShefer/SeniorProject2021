@@ -50,9 +50,6 @@ public class ActivityViewCustomers extends AppCompatActivity implements AdapterV
                 else if (item.getItemId() == R.id.nav_make_schedule) {
                     i = new Intent(getApplicationContext(), ActivityMakeSchedule.class);
                 }
-                else if (item.getItemId() == R.id.nav_view_appointments) {
-                    i = new Intent(getApplicationContext(), ActivityViewAppointmentsProv.class);
-                }
                 else if (item.getItemId() == R.id.nav_view_customers) {
                     i = new Intent(getApplicationContext(), ActivityViewCustomers.class);
                 }

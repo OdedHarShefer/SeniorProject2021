@@ -9,14 +9,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ActivityCustomer"></activity>
+        <activity android:name=".ActivityMakeAppointments" />
+        <activity android:name=".ActivityAppointments" />
+        <activity android:name=".ActivityCustomer" />
         <activity android:name=".ActivityProvider" />
         <activity android:name=".ActivitySchedule" />
         <activity android:name=".ActivityAddCustomer" />
         <activity android:name=".ActivityViewAppointmentsCust" />
-        <activity android:name=".ActivityViewAppointmentsProv" />
         <activity android:name=".ActivityMakeSchedule" />
-        <activity android:name=".ActivityMakeAppointment" />
         <activity android:name=".ActivityViewChatsProv" />
         <activity android:name=".ActivityViewProviders" />
         <activity android:name=".ActivityViewCustomers" />

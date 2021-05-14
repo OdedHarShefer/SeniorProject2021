@@ -45,9 +45,6 @@ public class ActivityMakeSchedule extends AppCompatActivity implements CalendarV
                 else if (item.getItemId() == R.id.nav_make_schedule) {
                     i = new Intent(getApplicationContext(), ActivityMakeSchedule.class);
                 }
-                else if (item.getItemId() == R.id.nav_view_appointments) {
-                    i = new Intent(getApplicationContext(), ActivityViewAppointmentsProv.class);
-                }
                 else if (item.getItemId() == R.id.nav_view_customers) {
                     i = new Intent(getApplicationContext(), ActivityViewCustomers.class);
                 }
@@ -78,7 +75,7 @@ public class ActivityMakeSchedule extends AppCompatActivity implements CalendarV
             startActivity(i);
         }
         if (spinner.getSelectedItemPosition() == 1){
-            Intent i = new Intent(this, ActivityViewAppointmentsProv.class);
+            Intent i = new Intent(this, ActivityAppointments.class);
             i.putExtra("year", year);
             i.putExtra("month", month);
             i.putExtra("day", dayOfMonth);

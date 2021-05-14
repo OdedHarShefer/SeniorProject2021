@@ -59,8 +59,8 @@ public class ActivityProvider extends AppCompatActivity {
     }
 
     public void makeAppointment(View view) {
-        Intent i = new Intent(this, ActivityMakeAppointment.class);
-
+        Intent i = new Intent(this, ActivityMakeAppointments.class);
+        startActivity(i);
     }
 
     public void remove(View view) {

@@ -39,7 +39,7 @@ public class ActivityProfileEditorCust extends AppCompatActivity {
 
         Toast.makeText(this, "Name: " + stName + ", Gender: " + gender, Toast.LENGTH_SHORT).show();
 
-        //Intent i = new Intent(this,ActivityProfileCust.class);
-        //startActivity(i);
+        Intent i = new Intent(this,ActivityProfileCust.class);
+        startActivity(i);
     }
 }

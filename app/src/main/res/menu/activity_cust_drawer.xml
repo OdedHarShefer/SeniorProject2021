@@ -9,13 +9,9 @@
             android:icon="@drawable/ic_profile"
             android:title="Profile" />
         <item
-            android:id="@+id/nav_make_appointment"
-            android:icon="@drawable/ic_make_appointment"
-            android:title="Make appointment" />
-        <item
             android:id="@+id/nav_view_appointments"
             android:icon="@drawable/ic_view_appointments"
-            android:title="View appointments" />
+            android:title="Appointments" />
         <item
             android:id="@+id/nav_view_providers"
             android:icon="@drawable/ic_view_providers"
@@ -26,6 +22,10 @@
             android:title="View chats" />
     </group>
 
+    <item
+        android:id="@+id/nav_switch_accounts"
+        android:icon="@drawable/ic_switch_account"
+        android:title="Switch account" />
     <item
         android:id="@+id/nav_logout"
         android:icon="@drawable/ic_logout"
