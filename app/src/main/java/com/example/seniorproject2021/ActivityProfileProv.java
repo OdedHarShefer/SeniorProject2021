@@ -1,31 +1,24 @@
 package com.example.seniorproject2021;
 
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
-import org.w3c.dom.Text;
-
 public class ActivityProfileProv extends AppCompatActivity {
 
+    Dal dal;
     Provider prov;
 
     TextView name;
@@ -34,6 +27,10 @@ public class ActivityProfileProv extends AppCompatActivity {
     TextView gender;
     TextView misc;
     RatingBar score;
+
+    TextView headerName;
+    ImageView headerImage;
+    TextView headerEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,13 +45,24 @@ public class ActivityProfileProv extends AppCompatActivity {
         score = findViewById(R.id.ratingBarScore);
         score.setEnabled(false);
 
-        prov = new Provider("Steve", "Lawyer", BitmapFactory.decodeResource(this.getResources(), R.drawable.temp_profile_pic), "Male", "I am a lawyer");
-        prov.setScore((float) 3.5);
+        dal = new Dal(this);
+        if (getIntent().getIntExtra("providerId", 0) != 0)
+            prov = dal.getProviderById(getIntent().getIntExtra("providerId", 0));
+        else
+            prov = dal.getProviderByAccountId(getIntent().getIntExtra("accountId", 0));
 
         InsertData(prov);
 
         //Navigation code:
         NavigationView navigationView = findViewById(R.id.nav_view);
+        if (!dal.checkForCustomer(prov.getAccountId())) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.activity_prov_drawer_v2);
+        }
+        View header = navigationView.getHeaderView(0);
+        headerName = header.findViewById(R.id.textViewHeaderName);
+        headerImage = header.findViewById(R.id.imageViewHeaderProfilePic);
+        headerEmail = header.findViewById(R.id.textViewHeaderEmail);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -68,9 +76,6 @@ public class ActivityProfileProv extends AppCompatActivity {
                 else if (item.getItemId() == R.id.nav_view_customers) {
                     i = new Intent(getApplicationContext(), ActivityViewCustomers.class);
                 }
-                else if (item.getItemId() == R.id.nav_view_chats) {
-                    i = new Intent(getApplicationContext(), ActivityViewChatsProv.class);
-                }
                 else if (item.getItemId() == R.id.nav_switch_accounts) {
                     i = new Intent(getApplicationContext(), ActivityProfilePick.class);
                 }
@@ -79,24 +84,29 @@ public class ActivityProfileProv extends AppCompatActivity {
                 }
                 DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
                 drawerLayout.closeDrawer(GravityCompat.START);
+                i.putExtra("providerId", prov.getId());
                 startActivity(i);
                 return true;
             }
         });
 
+        headerImage.setImageBitmap(BitmapFactory.decodeByteArray(prov.getImage(), 0, prov.getImage().length));
+        headerName.setText(prov.getName());
+        headerEmail.setText(dal.getAccount(prov.getAccountId()).getEmail());
     }
 
     private void InsertData(Provider prov) {
         name.setText(prov.getName());
         profession.setText(prov.getProfession());
-        image.setImageBitmap(prov.getImage());
+        image.setImageBitmap(BitmapFactory.decodeByteArray(prov.getImage(), 0, prov.getImage().length));
         gender.setText(prov.getGender());
         misc.setText(prov.getMisc());
-        score.setRating(prov.getScore());
+        score.setRating((float)prov.getAvgScore());
     }
 
     public void edit(View view) {
         Intent i = new Intent(this, ActivityProfileEditorProv.class);
+        i.putExtra("accountId", prov.getAccountId());
         startActivity(i);
     }
 }

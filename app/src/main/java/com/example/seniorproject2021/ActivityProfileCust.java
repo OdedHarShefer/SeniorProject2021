@@ -3,11 +3,11 @@ package com.example.seniorproject2021;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +22,11 @@ public class ActivityProfileCust extends AppCompatActivity {
     ImageView image;
     TextView gender;
 
+    TextView headerName;
+    ImageView headerImage;
+    TextView headerEmail;
+
+    Dal dal;
     Customer cust;
 
 
@@ -34,12 +39,28 @@ public class ActivityProfileCust extends AppCompatActivity {
         image = findViewById(R.id.imageView);
         gender = findViewById(R.id.textViewGender);
 
-        cust = new Customer("Jamila", BitmapFactory.decodeResource(this.getResources(), R.drawable.temp_profile_pic_2), "Female");
+
+
+        dal = new Dal(this);
+        if (getIntent().getIntExtra("customerId", 0) != 0)
+            cust = dal.getCustomerById(getIntent().getIntExtra("customerId", 0));
+        else
+            cust = dal.getCustomerByAccountId(getIntent().getIntExtra("accountId", 0));
 
         InsetData(cust);
 
+
+
         //Navigation code:
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        final NavigationView navigationView = findViewById(R.id.nav_view);
+        if (!dal.checkForProvider(cust.getAccountId())) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.activity_cust_drawer_v2);
+        }
+        View header = navigationView.getHeaderView(0);
+        headerName = header.findViewById(R.id.textViewHeaderName);
+        headerImage = header.findViewById(R.id.imageViewHeaderProfilePic);
+        headerEmail = header.findViewById(R.id.textViewHeaderEmail);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -50,8 +71,6 @@ public class ActivityProfileCust extends AppCompatActivity {
                     i = new Intent(getApplicationContext(), ActivityViewAppointmentsCust.class);
                 } else if (item.getItemId() == R.id.nav_view_providers) {
                     i = new Intent(getApplicationContext(), ActivityViewProviders.class);
-                } else if (item.getItemId() == R.id.nav_view_chats) {
-                    i = new Intent(getApplicationContext(), ActivityViewChatsCust.class);
                 } else if (item.getItemId() == R.id.nav_switch_accounts) {
                     i = new Intent(getApplicationContext(), ActivityProfilePick.class);
                 } else if (item.getItemId() == R.id.nav_logout) {
@@ -59,20 +78,26 @@ public class ActivityProfileCust extends AppCompatActivity {
                 }
                 DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
                 drawerLayout.closeDrawer(GravityCompat.START);
+                i.putExtra("customerId", cust.getId());
                 startActivity(i);
                 return true;
             }
         });
+
+        headerImage.setImageBitmap(BitmapFactory.decodeByteArray(cust.getImage(), 0, cust.getImage().length));
+        headerName.setText(cust.getName());
+        headerEmail.setText(dal.getAccount(cust.getAccountId()).getEmail());
     }
 
     private void InsetData(Customer cust) {
         name.setText(cust.getName());
-        image.setImageBitmap(cust.getImage());
+        image.setImageBitmap(BitmapFactory.decodeByteArray(cust.getImage(), 0, cust.getImage().length));
         gender.setText(cust.getGender());
     }
 
     public void edit(View view) {
         Intent i = new Intent(this,ActivityProfileEditorCust.class);
+        i.putExtra("accountId", cust.getAccountId());
         startActivity(i);
     }
 }

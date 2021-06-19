@@ -14,6 +14,9 @@ import java.util.ArrayList;
 
 public class ActivitySchedule extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
+    Dal dal;
+    String date;
+
     TextView textViewDate;
     ListView listViewHours;
     ArrayList<Hour> arrHours;
@@ -28,21 +31,45 @@ public class ActivitySchedule extends AppCompatActivity implements AdapterView.O
         listViewHours = findViewById(R.id.listViewHours);
         arrHours = new ArrayList<Hour>();
 
+        dal = new Dal(this);
+        date = formatTime();
+
+        textViewDate.setText(textViewDate.getText().toString() + date);
+
         getHoursData();
 
         hourAdapter = new HourAdapter(this, R.layout.hour, arrHours);
         listViewHours.setAdapter(hourAdapter);
 
         listViewHours.setOnItemClickListener(this);
+    }
 
-        Intent i = getIntent();
-        textViewDate.setText(textViewDate.getText() + " " + i.getExtras().getInt("day") + "/" + i.getExtras().getInt("month") + 1 + "/" + i.getExtras().getInt("year"));
+    public String formatTime() {
+        String st = "";
+        int year = getIntent().getIntExtra("year", 0);
+        int month = getIntent().getIntExtra("month", 0);
+        int day = getIntent().getIntExtra("day", 0);
+
+        if (day < 10)
+            st += "0";
+        st += day + "/";
+        if (month < 10)
+            st += "0";
+        st += month + "/" + year;
+
+        return st;
     }
 
     private void getHoursData() {
         Hour hour;
         for (int i = 0; i < 24; i++) {
             hour = new Hour(i);
+            if (i < 10) {
+                if (dal.checkMeetings(getIntent().getIntExtra("providerId", 0), date + "/0" + i))
+                    hour.setSelected(true);
+            } else
+            if (dal.checkMeetings(getIntent().getIntExtra("providerId", 0), date + "/" + i))
+                hour.setSelected(true);
             arrHours.add(hour);
         }
     }
@@ -50,5 +77,12 @@ public class ActivitySchedule extends AppCompatActivity implements AdapterView.O
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         hourAdapter.changeBackground(view, position);
+    }
+
+    public void confirm(View view) {
+        dal.removeMeetings(getIntent().getIntExtra("providerId", 0), date);
+        for (int i = 0; i < arrHours.size(); i++)
+            if (arrHours.get(i).isSelected())
+                    dal.addMeeting(getIntent().getIntExtra("providerId", 0), 0, date + "/" + arrHours.get(i).getStringHour());
     }
 }

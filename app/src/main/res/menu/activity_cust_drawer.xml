@@ -16,10 +16,6 @@
             android:id="@+id/nav_view_providers"
             android:icon="@drawable/ic_view_providers"
             android:title="View providers" />
-        <item
-            android:id="@+id/nav_view_chats"
-            android:icon="@drawable/ic_chat"
-            android:title="View chats" />
     </group>
 
     <item

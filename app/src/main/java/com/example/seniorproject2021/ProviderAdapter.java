@@ -1,6 +1,7 @@
 package com.example.seniorproject2021;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProviderAdapter extends ArrayAdapter<Provider> {
@@ -36,7 +38,7 @@ public class ProviderAdapter extends ArrayAdapter<Provider> {
         TextView name = v.findViewById(R.id.textViewName);
         name.setText(prov.getName());
         ImageView image = v.findViewById(R.id.imageView);
-        image.setImageBitmap(prov.getImage());
+        image.setImageBitmap(BitmapFactory.decodeByteArray(prov.getImage(), 0, prov.getImage().length));
         TextView profession = v.findViewById(R.id.textViewProfession);
         profession.setText(prov.getProfession());
         return v;
@@ -47,7 +49,7 @@ public class ProviderAdapter extends ArrayAdapter<Provider> {
         return data.size();
     }
 
-    public  Provider getProvider(int position) {
+    public Provider getProvider(int position) {
         return this.data.get(position);
     }
 }

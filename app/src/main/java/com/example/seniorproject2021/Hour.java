@@ -13,6 +13,14 @@ public class Hour {
         return hour;
     }
 
+    public String getStringHour() {
+        String st = "";
+        if (hour < 10)
+            st += "0";
+        st += hour;
+        return  st;
+    }
+
     public void setHour(int hour) {
         this.hour = hour;
     }

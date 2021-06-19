@@ -12,6 +12,7 @@ public class ActivityLogIn extends AppCompatActivity {
 
     EditText email;
     EditText password;
+    Dal dal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,22 +21,30 @@ public class ActivityLogIn extends AppCompatActivity {
 
         email = findViewById(R.id.editTextEmail);
         password = findViewById(R.id.editTextPassword);
+
+        dal = new Dal(this);
     }
 
     public void login(View view) {
         String stEmail = email.getText().toString();
         String stPassword = password.getText().toString();
 
-        Toast.makeText(this, "Email: " + stEmail + ", Password: " + stPassword, Toast.LENGTH_SHORT).show();
-
-        //Intent i = new Intent(this, ActivityProfilePick.class);
-        //startActivity(i);
-
-        Intent i = new Intent(this,ActivityProfileCust.class);
-        startActivity(i);
-
-        //Intent i = new Intent(this, ActivityProfileProv.class);
-        //startActivity(i);
+        //Toast.makeText(this, "" + dal.getAllAccounts().remove(0), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "" + dal.getAllAccounts().get(1), Toast.LENGTH_SHORT).show();
+        if (dal.checkForAccount(stEmail, stPassword)) {
+            Account a = dal.getAccount(stEmail);
+            Toast.makeText(this, a.getId() + ", " + a.getEmail() + ", " + a.getPassword(), Toast.LENGTH_LONG).show();
+            Intent i;
+            if (dal.checkForProvider(a.getId()) && dal.checkForCustomer(a.getId()))
+                i = new Intent(this, ActivityProfilePick.class);
+            else if (dal.checkForProvider(a.getId()))
+                i = new Intent(this, ActivityProfileProv.class);
+            else
+                i = new Intent(this, ActivityProfileCust.class);
+            i.putExtra("accountId", a.getId());
+            startActivity(i);
+        } else;
+            Toast.makeText(this, "Email of password are wrong", Toast.LENGTH_SHORT).show();
     }
 
     public void signIn(View view) {

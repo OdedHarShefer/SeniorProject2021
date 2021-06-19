@@ -35,12 +35,18 @@ public class HourAdapter extends ArrayAdapter {
         Hour hour = this.data.get(position);
         TextView textViewHour = v.findViewById(R.id.textViewHour);
         textViewHour.setText(hour.toString());
+        if (hour.isSelected())
+            v.setBackgroundColor(Color.GREEN);
         return v;
     }
 
     @Override
     public int getCount() {
         return data.size();
+    }
+
+    public Hour getHour(int position) {
+        return this.data.get(position);
     }
 
     public void changeBackground(View v, int position) {

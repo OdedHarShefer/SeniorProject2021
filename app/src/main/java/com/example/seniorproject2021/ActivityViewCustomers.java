@@ -7,6 +7,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,9 +21,15 @@ import java.util.ArrayList;
 
 public class ActivityViewCustomers extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
+    Dal dal;
+
     GridView gridView;
     ArrayList<Customer> aryCust;
     CustomerAdapter ca;
+
+    TextView headerName;
+    ImageView headerImage;
+    TextView headerEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +39,7 @@ public class ActivityViewCustomers extends AppCompatActivity implements AdapterV
         gridView = findViewById(R.id.gridViewCustomers);
         aryCust = new ArrayList<Customer>();
 
+        dal = new Dal(this);
         getCustData();
 
         ca = new CustomerAdapter(this, R.layout.customer, aryCust);
@@ -40,6 +49,14 @@ public class ActivityViewCustomers extends AppCompatActivity implements AdapterV
 
         //Navigation code:
         NavigationView navigationView = findViewById(R.id.nav_view);
+        if (!dal.checkForCustomer(dal.getProviderById(getIntent().getIntExtra("providerId", 0)).getAccountId())) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.activity_prov_drawer_v2);
+        }
+        View header = navigationView.getHeaderView(0);
+        headerName = header.findViewById(R.id.textViewHeaderName);
+        headerImage = header.findViewById(R.id.imageViewHeaderProfilePic);
+        headerEmail = header.findViewById(R.id.textViewHeaderEmail);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -53,9 +70,6 @@ public class ActivityViewCustomers extends AppCompatActivity implements AdapterV
                 else if (item.getItemId() == R.id.nav_view_customers) {
                     i = new Intent(getApplicationContext(), ActivityViewCustomers.class);
                 }
-                else if (item.getItemId() == R.id.nav_view_chats) {
-                    i = new Intent(getApplicationContext(), ActivityViewChatsProv.class);
-                }
                 else if (item.getItemId() == R.id.nav_switch_accounts) {
                     i = new Intent(getApplicationContext(), ActivityProfilePick.class);
                 }
@@ -64,26 +78,26 @@ public class ActivityViewCustomers extends AppCompatActivity implements AdapterV
                 }
                 DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
                 drawerLayout.closeDrawer(GravityCompat.START);
+                i.putExtra("providerId", getIntent().getIntExtra("providerId", 0));
                 startActivity(i);
                 return true;
             }
         });
+
+        headerImage.setImageBitmap(BitmapFactory.decodeByteArray(dal.getProviderById(getIntent().getIntExtra("providerId", 0)).getImage(), 0, dal.getProviderById(getIntent().getIntExtra("providerId", 0)).getImage().length));
+        headerName.setText(dal.getProviderById(getIntent().getIntExtra("providerId", 0)).getName());
+        headerEmail.setText(dal.getAccount(dal.getProviderById(getIntent().getIntExtra("providerId", 0)).getAccountId()).getEmail());
     }
 
     private void getCustData() {
-        Customer cust;
-        cust = new Customer("Yakov", BitmapFactory.decodeResource(this.getResources(), R.drawable.temp_profile_pic_3), "Male");
-        aryCust.add(cust);
-        cust = new Customer("Jamila", BitmapFactory.decodeResource(this.getResources(), R.drawable.temp_profile_pic_2), "Female");
-        aryCust.add(cust);
-        cust = new Customer("Steve", BitmapFactory.decodeResource(this.getResources(), R.drawable.temp_profile_pic), "Male");
-        aryCust.add(cust);
-        cust = new Customer("Daniel", BitmapFactory.decodeResource(this.getResources(), R.drawable.temp_profile_pic_4), "Male");
-        aryCust.add(cust);
+        ArrayList<Contact> arr = dal.getContactsByProviderId(getIntent().getIntExtra("providerId", 0));
+        while (!arr.isEmpty())
+            aryCust.add(dal.getCustomerById(arr.remove(0).getCustomerId()));
     }
 
     public void addCustomer(View view) {
         Intent i = new Intent(this, ActivityAddCustomer.class);
+        i.putExtra("providerId", getIntent().getIntExtra("providerId", 0));
         startActivity(i);
     }
 
@@ -91,7 +105,8 @@ public class ActivityViewCustomers extends AppCompatActivity implements AdapterV
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent i = new Intent(this, ActivityCustomer.class);
-        //i.putExtra("provider", ca.Customer(position));
+        i.putExtra("providerId", getIntent().getIntExtra("providerId", 0));
+        i.putExtra("customerId", ca.getCustomer(position).getId());
         startActivity(i);
     }
 }

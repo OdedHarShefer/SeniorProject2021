@@ -4,20 +4,44 @@ import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 public class Provider {
+    private int id;
+    private int accountId;
     private String name;
     private String profession;
-    private Bitmap image;
+    private byte[] image;
     private String gender;
     private String misc;
-    private float score;
+    private double score;
+    private int scoreCount;
 
-    public Provider(String name, String profession, Bitmap image, String gender, String misc) {
-        this.name = name;
-        this.profession = profession;
-        this.image = image;
-        this.gender = gender;
-        this.misc = misc;
-        this.score = 0;
+    public Provider() {}
+
+    public double getAvgScore() {
+        return score / scoreCount;
+    }
+
+    public int getScoreCount() {
+        return scoreCount;
+    }
+
+    public void setScoreCount(int scoreCount) {
+        this.scoreCount = scoreCount;
+    }
+
+    public int getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return this.id;
     }
 
     public String getName() {
@@ -36,11 +60,11 @@ public class Provider {
         this.profession = profession;
     }
 
-    public Bitmap getImage() {
+    public byte[] getImage() {
         return image;
     }
 
-    public void setImage(Bitmap image) {
+    public void setImage(byte[] image) {
         this.image = image;
     }
 
@@ -60,11 +84,11 @@ public class Provider {
         this.misc = misc;
     }
 
-    public float getScore() {
+    public double getScore() {
         return score;
     }
 
-    public void setScore(float score) {
+    public void setScore(double score) {
         this.score = score;
     }
 

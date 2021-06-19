@@ -9,20 +9,27 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
+
 public class ActivityProfileEditorProv extends AppCompatActivity {
 
+    int accountId;
+    Dal dal;
+    boolean newImage;
+
     EditText name;
-    EditText proffesion;
+    EditText profession;
     ImageButton image;
     RadioGroup genders;
     EditText misc;
@@ -33,29 +40,71 @@ public class ActivityProfileEditorProv extends AppCompatActivity {
         setContentView(R.layout.activity_profile_editor_prov);
 
         name = findViewById(R.id.editTextName);
-        proffesion = findViewById(R.id.editTextProfession);
+        profession = findViewById(R.id.editTextProfession);
         image = findViewById(R.id.imageView);
         genders = findViewById(R.id.radioGroup);
         misc = findViewById(R.id.editTextMultiLine);
+
+        newImage = false;
+        accountId = getIntent().getExtras().getInt("accountId");
+        dal = new Dal(this);
+        if (dal.checkForProvider(accountId)) {
+            insertData();
+            newImage = true;
+        }
+    }
+
+    private void insertData() {
+        Provider prov = dal.getProviderByAccountId(accountId);
+        name.setText(prov.getName());
+        profession.setText(prov.getProfession());
+        image.setImageBitmap(BitmapFactory.decodeByteArray(prov.getImage(), 0, prov.getImage().length));
+        if (prov.getGender() == "male")
+            genders.check(R.id.radioButtonMale);
+        else if (prov.getGender() == "female")
+            genders.check(R.id.radioButtonFemale);
+        else
+            genders.check(R.id.radioButtonOther);
+        misc.setText(prov.getMisc());
     }
 
     public void confirm(View view) {
         String stName = name.getText().toString();
-        String stProffsion = proffesion.getText().toString();
+        String stProfession = profession.getText().toString();
         String stMisc = misc.getText().toString();
-        //לשאול את המורה לגבי תמונה
         String gender = "";
         if (genders.getCheckedRadioButtonId() == R.id.radioButtonMale)
-            gender = "Male";
+            gender = "male";
         else if (genders.getCheckedRadioButtonId() == R.id.radioButtonFemale)
-            gender = "Female";
+            gender = "female";
         else if (genders.getCheckedRadioButtonId() == R.id.radioButtonOther)
-            gender = "Other";
+            gender = "other";
+        Drawable d;
+        if (newImage)
+            d = image.getDrawable();
+        else if (gender == "male")
+            d = getDrawable(R.drawable.male_avatar_profile_pic);
+        else if (gender == "female")
+            d = getDrawable(R.drawable.female_avatar_profile_pic);
+        else
+            d = getDrawable(R.drawable.avatar_profile_pic);
+        Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] bitmapData = stream.toByteArray();
 
-        Toast.makeText(this, "Name: " + stName + ", Proffesion: " + stProffsion + ", Gender: " + gender + ", Misc: " + stMisc, Toast.LENGTH_SHORT).show();
+        if (stName.matches("") || stProfession.matches("") || stMisc.matches("") || gender.matches(""))
+            Toast.makeText(this, "All fields must be Filled!", Toast.LENGTH_SHORT).show();
+        else {
+            if (dal.checkForProvider(accountId))
+                dal.updateProvider(dal.getProviderByAccountId(accountId).getId(), stName, stProfession, bitmapData, gender, stMisc, dal.getProviderByAccountId(accountId).getScore(), dal.getProviderByAccountId(accountId).getScoreCount());
+            else
+                dal.addProvider(stName, stProfession, bitmapData, gender, stMisc, accountId);
 
-        Intent i = new Intent(this, ActivityProfileProv.class);
-        startActivity(i);
+            Intent i = new Intent(this, ActivityProfileProv.class);
+            i.putExtra("providerId", dal.getProviderByAccountId(accountId).getId());
+            startActivity(i);
+        }
     }
 
     public void addPicture(View view) {
@@ -94,6 +143,7 @@ public class ActivityProfileEditorProv extends AppCompatActivity {
                     if (resultCode == RESULT_OK && data != null) {
                         Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
                         image.setImageBitmap(selectedImage);
+                        newImage = true;
                     }
 
                     break;
@@ -111,6 +161,7 @@ public class ActivityProfileEditorProv extends AppCompatActivity {
                                 String picturePath = cursor.getString(columnIndex);
                                 image.setImageBitmap(BitmapFactory.decodeFile(picturePath));
                                 cursor.close();
+                                newImage = true;
                             }
                         }
 

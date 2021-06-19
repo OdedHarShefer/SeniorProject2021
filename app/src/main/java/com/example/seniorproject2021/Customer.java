@@ -3,14 +3,34 @@ package com.example.seniorproject2021;
 import android.graphics.Bitmap;
 
 public class Customer {
+    private int id;
+    private int accountId;
     private String name;
-    private Bitmap image;
+    private byte[] image;
     private String gender;
 
-    public Customer(String name, Bitmap image, String gender) {
+    public Customer() {}
+
+    public Customer(String name, byte[] image, String gender) {
         this.name = name;
         this.image = image;
         this.gender = gender;
+    }
+
+    public int getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -21,11 +41,11 @@ public class Customer {
         this.name = name;
     }
 
-    public Bitmap getImage() {
+    public byte[] getImage() {
         return image;
     }
 
-    public void setImage(Bitmap image) {
+    public void setImage(byte[] image) {
         this.image = image;
     }
 

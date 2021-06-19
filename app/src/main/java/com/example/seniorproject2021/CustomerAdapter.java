@@ -1,6 +1,7 @@
 package com.example.seniorproject2021;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,7 @@ public class CustomerAdapter extends ArrayAdapter<Customer> {
         TextView name = v.findViewById(R.id.textViewName);
         name.setText(cust.getName());
         ImageView image = v.findViewById(R.id.imageView);
-        image.setImageBitmap(cust.getImage());
+        image.setImageBitmap(BitmapFactory.decodeByteArray(cust.getImage(), 0, cust.getImage().length));
         return v;
     }
 
