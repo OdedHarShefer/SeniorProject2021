@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -50,20 +52,38 @@ public class ActivityViewAppointmentsCust extends AppCompatActivity implements C
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Intent i = new Intent();
+                boolean flag = false;
                 if (item.getItemId() == R.id.nav_profile_cust) {
                     i = new Intent(getApplicationContext(), ActivityProfileCust.class);
+                    flag = true;
                 } else if (item.getItemId() == R.id.nav_view_appointments) {
                     i = new Intent(getApplicationContext(), ActivityViewAppointmentsCust.class);
+                    flag = true;
                 } else if (item.getItemId() == R.id.nav_view_providers) {
                     i = new Intent(getApplicationContext(), ActivityViewProviders.class);
+                    flag = true;
                 } else if (item.getItemId() == R.id.nav_switch_accounts) {
                     i = new Intent(getApplicationContext(), ActivityProfilePick.class);
+                    flag = true;
                 } else if (item.getItemId() == R.id.nav_logout) {
-
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ActivityViewAppointmentsCust.this);
+                    builder.setTitle("Log Out");
+                    builder.setMessage("Are you sure you want to log out?");
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent i = new Intent(ActivityViewAppointmentsCust.this, ActivityLogIn.class);
+                            startActivity(i);
+                        }
+                    });
+                    builder.setNegativeButton("No", null);
+                    builder.show();
                 }
                 DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-                drawerLayout.closeDrawer(GravityCompat.START);
-                startActivity(i);
+                if (flag) {
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    startActivity(i);
+                }
                 return true;
             }
         });
